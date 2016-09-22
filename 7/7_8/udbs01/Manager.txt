@@ -1,0 +1,24 @@
+info all
+
+Ô´¶Ë
+
+
+edit params ext02(view)
+extract ext02
+SETENV (NLS_LANG=AMERICAN_AMERICA.AL32UTF8)
+userid gg_user@orcla,password gg_user
+tranlogoptions ASMUSER sys@+ASM,ASMPASSWORD oracle_4U
+rmthost udbs02, mgrport 7809
+rmttask replicat, group rep02
+table send.*;
+
+add extract ext02, sourceistable
+info extract ext02
+
+
+start extract ext01
+start extract pmp01
+start extract ext02
+info extract ext02
+
+delete replicat rep02

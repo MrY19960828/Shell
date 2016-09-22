@@ -1,0 +1,22 @@
+info all
+
+Ä¿±ê¶Ë
+
+
+
+edit params rep02(view)
+replicat rep02
+assumetargetdefs
+SETENV (NLS_LANG=AMERICAN_AMERICA.AL32UTF8)
+userid gg_user@orclb,password gg_user
+discardfile /u01/gg/dirrpt/rep02.dsc, append, megabytes 20
+batchsql
+insertappend
+map send.t1, target send.t1;
+
+add replicat rep02, specialrun
+info replicat rep02
+
+
+
+

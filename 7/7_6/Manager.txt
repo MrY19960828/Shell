@@ -1,0 +1,43 @@
+info all
+
+Ô´¶Ë
+
+edit params mgr(view)
+port 7809
+dynamicportlist 7800-8000
+autorestart extract * ,retries 5,waitminutes 2,resetminutes 5
+
+
+edit params ext01(view)
+extract ext01
+dynamicresolution
+SETENV (NLS_LANG=AMERICAN_AMERICA.AL32UTF8)
+userid gg_user@orcla,password gg_user
+tranlogoptions ASMUSER sys@+ASM,ASMPASSWORD oracle_4U
+GETTRUNCATES
+exttrail /u01/gg/dirdat/ex
+ddl include all
+table send.*;
+
+add extract ext01,tranlog,begin now
+add exttrail /u01/gg/dirdat/ex ,extract ext01
+
+
+edit params pmp01(view)
+extract pmp01
+dynamicresolution
+SETENV (NLS_LANG=AMERICAN_AMERICA.AL32UTF8)
+userid gg_user@orcla, password gg_user
+PASSTHRU
+rmthost udbs02, mgrport 7809
+rmttrail /u01/gg/dirdat/pt
+table send.*;
+
+add extract pmp01,exttrailsource /u01/gg/dirdat/ex
+add rmttrail /u01/gg/dirdat/pt, extract pmp01
+
+info all
+start extract ext01
+start extract pmp01
+
+view report pmp01

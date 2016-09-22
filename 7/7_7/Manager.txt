@@ -1,0 +1,35 @@
+info all
+
+Ä¿±ê¶Ë
+
+edit params mgr(view)
+port 7809
+dynamicportlist 7800-8000
+autorestart extract * ,retries 5,waitminutes 2,resetminutes 5
+
+
+edit params ./GLOBAL(view)
+GGSCHEMA gg_user
+CHECKPOINTTABLE gg_user.checkpoint
+
+dblogin userid gg_user@orclb, password gg_user
+add checkpointtable gg_user.checkpoint
+
+
+edit params rep01(view)
+replicat rep01
+assumetargetdefs
+SETENV (NLS_LANG=AMERICAN_AMERICA.AL32UTF8)
+userid gg_user@orclb,password gg_user
+discardfile /u01/gg/dirrpt/rep01.dsc, append, megabytes 20
+dynamicresolution
+ddloptions report
+ddlerror default ignore retryop maxretries 3 retrydelay 5
+reperror default, discard
+map send.*, target send.*;
+
+add replicat rep01, exttrail /u01/gg/dirdat/pt, checkpointtable gg_user.checkpoint
+
+add extract ext01,tranlog,begin now
+add exttrail /u01/gg/dirdat/ex ,extract ext01
+info replicat rep01
